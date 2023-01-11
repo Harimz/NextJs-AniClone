@@ -1,8 +1,9 @@
-import { Box, Button, Container, Flex, Spacer, Text } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Button, Container, Flex } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import { useIsDark, useScrollDirection } from "../../hooks";
+import BrowsePopover from "./browse-popover";
 
 const Navbar = () => {
   const { scrollDirection } = useScrollDirection();
@@ -20,10 +21,10 @@ const Navbar = () => {
       transform={scrollingUp ? "translateY(0)" : "translateY(-10rem)"}
       transition="transform 0.3s ease-in-out"
       zIndex="999"
-      display={{ base: "none", md: "block" }}
+      display={["none", "block"]}
     >
       <Container
-        maxW="container.xl"
+        maxW="container.lg"
         display="flex"
         alignItems="center"
         p="0.5rem"
@@ -39,6 +40,8 @@ const Navbar = () => {
         </Link>
 
         <Flex gap="1rem">
+          <BrowsePopover />
+
           <Link passHref href="/login">
             <Button variant="primaryGhost">Login</Button>
           </Link>
