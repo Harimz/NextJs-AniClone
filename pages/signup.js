@@ -12,6 +12,7 @@ import {
 import { signupOptions } from "../utils";
 import { useForm } from "react-hook-form";
 import { useIsDark } from "../hooks";
+import { useRegisterUserMutation } from "../app/services/userApi";
 
 const SignUpPage = () => {
   const {
@@ -20,14 +21,16 @@ const SignUpPage = () => {
     formState: { errors },
     clearErrors,
   } = useForm(signupOptions);
-  const [isLoading, setIsLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const { isDark } = useIsDark();
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
   const toast = useToast();
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
+      const user = await registerUser(data);
+
+      console.log(user);
     } catch (error) {
       console.log(error);
     }
