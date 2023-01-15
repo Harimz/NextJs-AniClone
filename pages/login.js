@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -6,12 +6,15 @@ import {
   Flex,
   Heading,
   Input,
+  Spinner,
   Text,
   useToast,
 } from "@chakra-ui/react";
 import { loginOptions } from "../utils";
 import { useForm } from "react-hook-form";
 import { useIsDark } from "../hooks";
+import { getSession, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const LoginPage = () => {
   const {
@@ -23,13 +26,39 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const { isDark } = useIsDark();
+  const router = useRouter();
   const toast = useToast();
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
+      const user = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+
+      if (user.error) {
+        throw new Error(user.error);
+      }
+
+      router.push("/");
     } catch (error) {
-      console.log(error);
+      const errorMessage =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+
+      toast({
+        title: (
+          <Flex flexDir="column" gap="0.5rem">
+            <Text>{errorMessage}</Text>
+          </Flex>
+        ),
+        status: "error",
+        isClosable: true,
+        variant: "subtle",
+        position: "top",
+      });
     }
   };
 
@@ -84,13 +113,31 @@ const LoginPage = () => {
             />
 
             <Button variant="form" type="submit">
-              {isLoading ? "Loading..." : "Sign Up"}
+              {isLoading ? <Spinner /> : "Login"}
             </Button>
           </Flex>
         </form>
       </Container>
     </>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      props: {},
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
+  } else {
+    return {
+      props: {},
+    };
+  }
 };
 
 export default LoginPage;

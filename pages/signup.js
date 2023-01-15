@@ -6,6 +6,7 @@ import {
   Flex,
   Heading,
   Input,
+  Spinner,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -13,6 +14,8 @@ import { signupOptions } from "../utils";
 import { useForm } from "react-hook-form";
 import { useIsDark } from "../hooks";
 import { useRegisterUserMutation } from "../app/services/userApi";
+import { getSession, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const SignUpPage = () => {
   const {
@@ -21,18 +24,43 @@ const SignUpPage = () => {
     formState: { errors },
     clearErrors,
   } = useForm(signupOptions);
-  const [formErrors, setFormErrors] = useState({});
   const { isDark } = useIsDark();
-  const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [registerUser, { isLoading, error }] = useRegisterUserMutation();
   const toast = useToast();
+  const router = useRouter();
 
   const onSubmit = async (data) => {
     try {
       const user = await registerUser(data);
 
-      console.log(user);
+      if (user.error) {
+        throw new Error(user.error.data.message);
+      }
+
+      await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+
+      router.push("/");
     } catch (error) {
-      console.log(error);
+      const errorMessage =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+
+      toast({
+        title: (
+          <Flex flexDir="column" gap="0.5rem">
+            <Text>{errorMessage}</Text>
+          </Flex>
+        ),
+        status: "error",
+        isClosable: true,
+        variant: "subtle",
+        position: "top",
+      });
     }
   };
 
@@ -107,13 +135,31 @@ const SignUpPage = () => {
               mb="4rem"
             />
             <Button variant="form" type="submit">
-              {isLoading ? "Loading..." : "Sign Up"}
+              {isLoading ? <Spinner /> : "Sign Up"}
             </Button>
           </Flex>
         </form>
       </Container>
     </>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      props: {},
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
+  } else {
+    return {
+      props: {},
+    };
+  }
 };
 
 export default SignUpPage;

@@ -12,6 +12,14 @@ export default Wrapper({
 
     await dbConnect();
 
-    return "Success";
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      throw new Exception("User already exists", 409);
+    }
+
+    const user = await User.create({ username, email, password });
+
+    return user;
   },
 });
