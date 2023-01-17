@@ -37,6 +37,8 @@ const LoginPage = () => {
         password: data.password,
       });
 
+      console.log(user);
+
       if (user.error) {
         throw new Error(user.error);
       }
