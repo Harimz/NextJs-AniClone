@@ -1,14 +1,29 @@
 import React, { useState } from "react";
-import { Box, Button, Container, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+} from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useIsDark, useScrollDirection } from "../../hooks";
 import BrowsePopover from "./browse-popover";
+import { useSession, signOut } from "next-auth/react";
+import { HiChevronDown } from "react-icons/hi";
 
 const Navbar = () => {
   const { scrollDirection } = useScrollDirection();
   const { isDark } = useIsDark();
   const scrollingUp = scrollDirection === "UP";
+  const { data: session, status } = useSession();
+
+  console.log(session);
 
   return (
     <Box
@@ -39,16 +54,47 @@ const Navbar = () => {
           />
         </Link>
 
-        <Flex gap="1rem">
+        <Flex gap="3rem">
           <BrowsePopover />
 
-          <Link passHref href="/login">
-            <Button variant="primaryGhost">Login</Button>
-          </Link>
+          {!session ? (
+            <Flex gap="1rem">
+              <Link passHref href="/login">
+                <Button variant="primaryGhost">Login</Button>
+              </Link>
 
-          <Link passHref href="/signup">
-            <Button variant="primary">Sign Up</Button>
-          </Link>
+              <Link passHref href="/signup">
+                <Button variant="primary">Sign Up</Button>
+              </Link>
+            </Flex>
+          ) : (
+            <Popover>
+              <PopoverTrigger>
+                <Flex gap="0.5rem" alignItems="center" cursor="pointer">
+                  <Image
+                    src="/images/profile/default.png"
+                    alt="profile picture"
+                    height={16}
+                    width={38}
+                  />
+                  <HiChevronDown size={22} color="gray" />
+                </Flex>
+              </PopoverTrigger>
+              <PopoverContent border="none" w="15rem">
+                <PopoverArrow />
+                <PopoverBody
+                  bgColor={isDark ? "blue.400" : "white"}
+                  border="none"
+                  outline="none"
+                  p="1rem"
+                >
+                  <Button variant="primary" w="100%" onClick={() => signOut()}>
+                    Logout
+                  </Button>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          )}
         </Flex>
       </Container>
     </Box>
