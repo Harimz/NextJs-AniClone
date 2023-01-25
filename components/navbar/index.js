@@ -23,8 +23,6 @@ const Navbar = () => {
   const scrollingUp = scrollDirection === "UP";
   const { data: session, status } = useSession();
 
-  console.log(session);
-
   return (
     <Box
       position="sticky"

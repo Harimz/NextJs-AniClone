@@ -17,7 +17,7 @@ const Footer = () => {
   const isDark = colorMode === "dark";
 
   return (
-    <Box as="footer" bgColor="blue.600" mt="50rem">
+    <Box as="footer" bgColor="blue.600" mt="15rem">
       <Container maxW="container.xl" p={{ base: "2rem", lg: "5rem" }}>
         <Flex justify="space-between" direction={{ base: "column", lg: "row" }}>
           <Box mb="2rem">
