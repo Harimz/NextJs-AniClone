@@ -3,7 +3,7 @@ import { Flex, Grid, Text } from "@chakra-ui/react";
 import LoadingSpinner from "../loading-spinner";
 import DisplayCard from "./display-card";
 
-const Display = ({ data, isFetching, limit = 5, header, type }) => {
+const Display = ({ data, isFetching, limit = 6, header, type }) => {
   if (isFetching) return <LoadingSpinner />;
 
   const displayData = data?.data;
@@ -15,7 +15,7 @@ const Display = ({ data, isFetching, limit = 5, header, type }) => {
       <Grid
         templateColumns={{
           base: "repeat(auto-fit, minmax(156px, 1fr))",
-          md: "repeat(auto-fit, minmax(196px, 1fr))",
+          md: "repeat(auto-fit, minmax(166px, 1fr))",
         }}
         gap={{ base: 0, md: 6 }}
       >

@@ -1,17 +1,14 @@
 import { Container } from "@chakra-ui/react";
-import {
-  useGetTopAiringAnimeQuery,
-  useGetTopUpcomingAnimeQuery,
-} from "../app/services/animeApi";
+import { useGetTopAnimeFilterQuery } from "../app/services/animeApi";
 import Display from "../components/display";
 import Hero from "../components/hero";
 import TopAnime from "../components/top-anime";
 
 export default function Home() {
   const { data: airingData, isLoading: isFetchingAiring } =
-    useGetTopAiringAnimeQuery();
+    useGetTopAnimeFilterQuery("filter=airing");
   const { data: upcomingData, isLoading: isFetchingUpcoming } =
-    useGetTopUpcomingAnimeQuery();
+    useGetTopAnimeFilterQuery("filter=upcoming");
 
   return (
     <>
@@ -22,7 +19,6 @@ export default function Home() {
           data={airingData}
           isFetching={isFetchingAiring}
           header="Airing Anime"
-          limit={5}
           type="anime"
         />
 
@@ -30,7 +26,6 @@ export default function Home() {
           data={upcomingData}
           isFetching={isFetchingUpcoming}
           header="Upcoming Anime"
-          limit={5}
           type="anime"
         />
 

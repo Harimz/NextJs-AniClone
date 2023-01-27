@@ -11,14 +11,15 @@ export const animeApi = createApi({
         return "/top/anime";
       },
     }),
-    getTopUpcomingAnime: builder.query({
-      query: () => {
-        return "/top/anime?anime_search_query_type=upcoming";
+    getTopAnimeFilter: builder.query({
+      query: (filter) => {
+        return `/top/anime?${filter}`;
       },
     }),
-    getTopAiringAnime: builder.query({
-      query: () => {
-        return "/top/anime?anime_search_query_type=airing";
+    getContentById: builder.query({
+      query: (data) => {
+        const { type, id } = data;
+        return `/${type}/${id}/full`;
       },
     }),
   }),
@@ -28,4 +29,6 @@ export const {
   useGetTopAnimeQuery,
   useGetTopAiringAnimeQuery,
   useGetTopUpcomingAnimeQuery,
+  useGetTopAnimeFilterQuery,
+  useGetContentByIdQuery,
 } = animeApi;

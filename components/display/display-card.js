@@ -4,8 +4,6 @@ import Link from "next/link";
 import React from "react";
 
 const DisplayCard = ({ contentData, type }) => {
-  console.log(contentData);
-
   return (
     <Flex direction="column" cursor="pointer" p={{ base: "0.5rem", md: "0" }}>
       <Link passHref href={`/${type}/${contentData.mal_id}`}>
@@ -17,7 +15,7 @@ const DisplayCard = ({ contentData, type }) => {
           position="relative"
         >
           <Image
-            src={contentData.images.jpg.image_url}
+            src={contentData.images.webp.large_image_url}
             fill
             alt={contentData.title}
           />

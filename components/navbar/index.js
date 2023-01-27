@@ -16,12 +16,14 @@ import { useIsDark, useScrollDirection } from "../../hooks";
 import BrowsePopover from "./browse-popover";
 import { useSession, signOut } from "next-auth/react";
 import { HiChevronDown } from "react-icons/hi";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
   const { scrollDirection } = useScrollDirection();
   const { isDark } = useIsDark();
   const scrollingUp = scrollDirection === "UP";
   const { data: session, status } = useSession();
+  const { query } = useRouter();
 
   return (
     <Box
@@ -31,10 +33,14 @@ const Navbar = () => {
       top="0"
       as="nav"
       bg={isDark ? "blue.300" : "darkPurple"}
+      opacity={query.type ? "0.3" : "1"}
       transform={scrollingUp ? "translateY(0)" : "translateY(-10rem)"}
-      transition="transform 0.3s ease-in-out"
+      transition="all 0.3s ease-in-out"
       zIndex="999"
       display={["none", "block"]}
+      _hover={{
+        opacity: 1,
+      }}
     >
       <Container
         maxW="container.lg"
